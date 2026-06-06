@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #0a0a0f;
+      overflow: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+    }
+
+    .bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 85% 35%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 90% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.2) 0%, transparent 100%);
+      background-size: 200px 200px;
+      animation: twinkle 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .calculator {
+      position: relative;
+      z-index: 1;
+      background: rgba(18, 18, 24, 0.85);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 28px;
+      border-radius: 32px;
+      width: 320px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 0 40px rgba(147, 51, 234, 0.05);
+    }
+
+    .calculator::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 33px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), transparent 40%, transparent 60%, rgba(236, 72, 153, 0.3));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .brand {
+      font-size: 12px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #display {
+      width: 100%;
+      height: 70px;
+      font-size: 36px;
+      font-weight: 300;
+      text-align: right;
+      padding: 0 6px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.95);
+      outline: none;
+      font-family: inherit;
+      letter-spacing: 1px;
+    }
+
+    #display::placeholder {
+      color: rgba(255, 255, 255, 0.1);
+    }
+
+    .expression-line {
+      text-align: right;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.25);
+      min-height: 20px;
+      margin-bottom: 18px;
+      padding: 0 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: 'Consolas', monospace;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 14px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      height: 60px;
+      font-size: 21px;
+      font-weight: 500;
+      border: none;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: inherit;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    button:hover::after {
+      opacity: 1;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0px) scale(0.94);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    button span.ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0);
+      animation: ripple 0.5s ease-out;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    .operator {
+      background: rgba(244, 114, 182, 0.1);
+      color: #f472b6;
+    }
+
+    .operator:hover {
+      background: rgba(244, 114, 182, 0.2);
+    }
+
+    .operator:active {
+      background: rgba(244, 114, 182, 0.15);
+    }
+
+    .equal {
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      color: white;
+      box-shadow: 0 4px 20px rgba(167, 139, 250, 0.25);
+    }
+
+    .equal:hover {
+      box-shadow: 0 6px 30px rgba(167, 139, 250, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .equal:active {
+      transform: translateY(0px) scale(0.94);
+    }
+
+    .clear {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .clear:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .fn {
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 17px;
+    }
+
+    .fn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .span-two {
+      grid-column: span 2;
+    }
+
+    .key-hint {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      z-index: 1;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <div class="calculator">
+    <div class="brand">✦ Calculator</div>
+
+    <input type="text" id="display" placeholder="0" readonly>
+    <div class="expression-line" id="expression"></div>
+
+    <div class="buttons">
+      <button onclick="pressFn('percent')" class="fn">%</button>
+      <button onclick="pressFn('sqrt')" class="fn">√</button>
+      <button onclick="pressFn('power')" class="fn">xʸ</button>
+      <button onclick="backspace()" class="fn">⌫</button>
+
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="press('/')" class="operator">÷</button>
+
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('*')" class="operator">×</button>
+
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('-')" class="operator">−</button>
+
+      <button onclick="pressFn('toggleSign')" class="fn">±</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
+      <button onclick="press('+')" class="operator">+</button>
+
+      <button onclick="clearAll()" class="clear">AC</button>
+      <button onclick="calculate()" class="equal span-two">=</button>
+    </div>
+  </div>
+
+  <div class="key-hint">⌨ keyboard supported</div>
+
+  <script>
+    const display = document.getElementById("display");
+    const expressionEl = document.getElementById("expression");
+
+    document.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("mousedown", function(e) {
+        const rect = this.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + "px";
+        ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+        ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+        this.appendChild(ripple);
+        ripple.addEventListener("animationend", () => ripple.remove());
+      });
+    });
+
+    function press(value) {
+      const cursor = display.selectionStart || display.value.length;
+      display.value = display.value.slice(0, cursor) + value + display.value.slice(cursor);
+      display.focus();
+      display.setSelectionRange(cursor + value.length, cursor + value.length);
+      display.scrollLeft = display.scrollWidth;
+    }
+
+    function backspace() {
+      const cursor = display.selectionStart || display.value.length;
+      if (cursor === 0) return;
+      display.value = display.value.slice(0, cursor - 1) + display.value.slice(cursor);
+      display.focus();
+      display.setSelectionRange(cursor - 1, cursor - 1);
+    }
+
+    function clearAll() {
+      display.value = "";
+      expressionEl.textContent = "";
+      display.focus();
+    }
+
+    function pressFn(fn) {
+      const val = display.value;
+      if (fn === 'percent') {
+        const num = parseFloat(val) || 0;
+        display.value = (num / 100).toString();
+      } else if (fn === 'sqrt') {
+        const num = parseFloat(val) || 0;
+        display.value = Math.sqrt(num).toString();
+      } else if (fn === 'power') {
+        display.value += "**";
+      } else if (fn === 'toggleSign') {
+        if (val.startsWith("-")) display.value = val.slice(1);
+        else if (val && val !== "0") display.value = "-" + val;
+      }
+      display.focus();
+      display.scrollLeft = display.scrollWidth;
+    }
+
+    function calculate() {
+      const expression = display.value;
+      if (!expression.trim()) return;
+      try {
+        const result = eval(expression);
+        if (!isFinite(result)) { display.value = "Error"; expressionEl.textContent = ""; return; }
+        expressionEl.textContent = expression + " =";
+        display.value = Number.isInteger(result) ? result.toString() : parseFloat(result.toFixed(10)).toString();
+      } catch {
+        display.value = "Error";
+        expressionEl.textContent = "";
+      }
+      display.focus();
+      display.scrollLeft = display.scrollWidth;
+    }
+
+    document.addEventListener("keydown", (e) => {
+      const key = e.key;
+      if (key >= "0" && key <= "9") { press(key); return; }
+      if (key === ".") { press("."); return; }
+      if (["+", "-", "*", "/"].includes(key)) { press(key); return; }
+      if (key === "%") { pressFn("percent"); return; }
+      if (key === "Enter" || key === "=") { e.preventDefault(); calculate(); return; }
+      if (key === "Backspace") { e.preventDefault(); backspace(); return; }
+      if (key === "Escape" || key === "Delete") { clearAll(); return; }
+    });
+  </script>
+</body>
+</html>
