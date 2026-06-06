@@ -31,13 +31,13 @@ Dark glassmorphism theme with:
 
 ## 🚀 How to Use
 
-Just open `calculator.html` in any browser. That's it.
+Just open `index.html` in any browser. That's it.
 
 ## 📁 Files
 
 | File | Description |
 |------|-------------|
-| `calculator.html` | The full calculator app (HTML + CSS + JS all in one) |
+| `index.html` | The full calculator app (HTML + CSS + JS all in one) |
 | `README.md` | This file |
 
 ## ⌨️ Keyboard Shortcuts
