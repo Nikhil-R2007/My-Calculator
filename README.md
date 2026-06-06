@@ -27,8 +27,7 @@ Dark glassmorphism theme with:
 
 ## 🔗 Live Demo
 
-<!-- Paste your live demo link here -->
-[Live Demo]()
+[Live Demo](https://nikhil-r2007.github.io/My-Calculator/)
 
 ## 🚀 How to Use
 
